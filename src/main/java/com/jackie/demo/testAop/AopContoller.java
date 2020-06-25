@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 public class AopContoller {
 
     @PostMapping("/test")
-    public String metod(@ReqDataType(ReqData.class) BaseRequest<ReqData> baseRequest) {
+    public String metod(BaseRequest<ReqData> baseRequest) {
         System.out.println(baseRequest);
         return "hello";
     }

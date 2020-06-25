@@ -66,4 +66,8 @@ public class BaseRequest<T> {
 	public void setReqDataString(String reqData) {
 		this.reqData = (T) reqData;
 	}
+
+	public void setReqData(Object o) {
+		this.reqData = (T) o;
+	}
 }

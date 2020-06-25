@@ -1,5 +1,7 @@
 package com.jackie.demo.testAop;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import jdk.management.resource.internal.inst.SocketOutputStreamRMHooks;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -8,6 +10,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,6 +30,9 @@ import java.lang.reflect.Type;
 @Aspect
 @Configuration
 public class LogAspect {
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     /**
      * 继承了“BaseController”的RestController控制器方法
@@ -50,8 +56,10 @@ public class LogAspect {
                     if (actualTypeArguments.length > 0) {
                         Type actualTypeArgument = actualTypeArguments[0];
                         clazz = Class.forName(actualTypeArgument.getTypeName());
-                        BaseRequest baseRequest = (BaseRequest) arg;
-                        System.out.println(clazz);
+                        BaseRequest<?> baseRequest = (BaseRequest<?>) arg;
+                        Object reqData = baseRequest.getReqData();
+                        Object o = objectMapper.readValue(String.valueOf(reqData), clazz);
+                        ((BaseRequest<?>) arg).setReqData(o);
                     }
                 }
             }
